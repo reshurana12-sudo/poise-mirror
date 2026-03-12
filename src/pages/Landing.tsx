@@ -58,7 +58,7 @@ const Landing = () => {
                 <span className="text-gradient-primary">Presence</span>
               </h1>
 
-              <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
+              <p className="text-body-lg text-muted-foreground max-w-lg leading-relaxed">
                 A personal intelligence system that observes your visual presence, reveals hidden patterns, and guides confident self-improvement.
               </p>
             </motion.div>
