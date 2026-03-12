@@ -25,7 +25,7 @@ const Landing = () => {
       >
         <div className="flex items-center gap-2">
           <img src={logoImg} alt="LooksLens" className="w-8 h-8 rounded-lg object-contain" />
-          <span className="font-display text-lg font-semibold tracking-tight">LooksLens</span>
+          <span className="brand-wordmark text-lg">LooksLens</span>
         </div>
         <Button
           variant="ghost"
