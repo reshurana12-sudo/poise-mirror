@@ -50,7 +50,7 @@ const Landing = () => {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-glow" />
-                <span className="text-xs font-medium text-primary/80 tracking-wide uppercase">Intelligent Presence Analysis</span>
+                <span className="text-label text-primary/80 uppercase">Intelligent Presence Analysis</span>
               </div>
 
               <h1 className="font-display text-hero font-extrabold leading-[1.05]">

@@ -187,7 +187,7 @@ const AuthPage = () => {
                 exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
                 transition={{ duration: 0.25 }}
               >
-                <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-display text-h2 text-foreground mb-2">
                   {isLogin ? 'Welcome back' : 'Create your account'}
                 </h2>
                 <p className="text-muted-foreground text-sm mb-8">
