@@ -175,7 +175,7 @@ const AuthPage = () => {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
             <img src={logoImg} alt="LooksLens" className="w-10 h-10 rounded-xl object-contain" />
-            <span className="font-display text-xl font-semibold text-foreground">LooksLens</span>
+            <span className="brand-wordmark text-xl text-foreground">LooksLens</span>
           </div>
 
           <div className="glass-panel p-8">
