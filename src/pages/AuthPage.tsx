@@ -131,7 +131,7 @@ const AuthPage = () => {
               <span className="brand-wordmark text-2xl text-foreground">LooksLens</span>
             </div>
 
-            <h1 className="font-display text-4xl xl:text-5xl font-bold text-foreground leading-tight mb-6">
+            <h1 className="font-display text-h1 text-foreground mb-6">
               Unlock your
               <span className="text-gradient-primary block">visual presence</span>
             </h1>
