@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { User, Settings, Bell, Shield, ChevronRight, Camera, Pencil, Check, X, LogOut } from "lucide-react";
+import { User, Settings, Bell, Shield, ChevronRight, Camera, Pencil, Check, X, LogOut, Scan, Calendar, Flame } from "lucide-react";
 import AppLayout from "@/components/AppLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
@@ -23,6 +23,12 @@ const ProfilePage = () => {
     { icon: Settings, label: "Preferences", desc: "Analysis settings" },
   ];
 
+  const stats = [
+    { icon: Scan, label: "Total Scans", value: "6" },
+    { icon: Calendar, label: "Days Tracked", value: "36" },
+    { icon: Flame, label: "Current Streak", value: "5 days" },
+  ];
+
   const handleStartEdit = () => {
     setNameValue(profile?.display_name ?? "");
     setEditingName(true);
@@ -42,9 +48,7 @@ const ProfilePage = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        return; // silently reject >2MB
-      }
+      if (file.size > 2 * 1024 * 1024) return;
       uploadAvatar(file);
     }
   };
@@ -60,8 +64,8 @@ const ProfilePage = () => {
 
   return (
     <AppLayout>
-      <div className="p-6 md:p-8 max-w-4xl mx-auto">
-        <div className="mb-8">
+      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+        <div className="mb-6 md:mb-8">
           <h1 className="font-display text-2xl font-semibold">Profile</h1>
           <p className="text-sm text-muted-foreground mt-1">Your account and preferences</p>
         </div>
@@ -70,7 +74,7 @@ const ProfilePage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-panel p-6 mb-8"
+          className="glass-elevated p-6 mb-4"
         >
           {loading ? (
             <div className="flex items-center gap-4">
@@ -82,17 +86,12 @@ const ProfilePage = () => {
             </div>
           ) : (
             <div className="flex items-center gap-4">
-              {/* Avatar */}
               <button
                 onClick={handleAvatarClick}
                 className="relative w-16 h-16 rounded-2xl overflow-hidden bg-primary/10 border border-primary/20 flex items-center justify-center group"
               >
                 {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt="Avatar"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-7 h-7 text-primary/60" />
                 )}
@@ -100,15 +99,8 @@ const ProfilePage = () => {
                   <Camera className="w-5 h-5 text-foreground" />
                 </div>
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
 
-              {/* Name & info */}
               <div className="flex-1 min-w-0">
                 {editingName ? (
                   <div className="flex items-center gap-2">
@@ -128,37 +120,47 @@ const ProfilePage = () => {
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <h2 className="font-display text-lg font-semibold truncate">
-                      {profile?.display_name || "User"}
-                    </h2>
-                    <button
-                      onClick={handleStartEdit}
-                      className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-                    >
+                    <h2 className="font-display text-lg font-semibold truncate">{profile?.display_name || "User"}</h2>
+                    <button onClick={handleStartEdit} className="w-6 h-6 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
                       <Pencil className="w-3 h-3" />
                     </button>
                   </div>
                 )}
-                <p className="text-sm text-muted-foreground truncate">
-                  {user?.email} · Member since {memberSince}
-                </p>
+                <p className="text-sm text-muted-foreground truncate">{user?.email} · Member since {memberSince}</p>
               </div>
             </div>
           )}
         </motion.div>
 
+        {/* Stats Row */}
+        <div className="grid grid-cols-3 gap-3 mb-6 md:mb-8">
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * i }}
+              className="glass-panel p-4 text-center"
+            >
+              <s.icon className="w-4 h-4 text-primary/60 mx-auto mb-2" />
+              <p className="score-display text-lg">{s.value}</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+            </motion.div>
+          ))}
+        </div>
+
         {/* Settings */}
-        <div className="space-y-2 mb-8">
+        <div className="space-y-2 mb-6 md:mb-8">
           {settingsGroups.map((item, i) => (
             <motion.button
               key={item.label}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 * i }}
-              className="w-full glass-panel-hover p-4 flex items-center justify-between"
+              className="w-full glass-panel-hover p-4 flex items-center justify-between active:scale-[0.98]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
                   <item.icon className="w-4 h-4 text-muted-foreground" />
                 </div>
                 <div className="text-left">
@@ -171,15 +173,15 @@ const ProfilePage = () => {
           ))}
         </div>
 
-        {/* Sign Out (visible on mobile as well) */}
+        {/* Sign Out */}
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           onClick={handleSignOut}
-          className="w-full glass-panel-hover p-4 flex items-center gap-3 text-destructive hover:bg-destructive/5"
+          className="w-full glass-panel-hover p-4 flex items-center gap-3 text-destructive hover:bg-destructive/5 active:scale-[0.98]"
         >
-          <div className="w-9 h-9 rounded-lg bg-destructive/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-destructive/10 flex items-center justify-center">
             <LogOut className="w-4 h-4" />
           </div>
           <p className="text-sm font-medium">Sign Out</p>
