@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -55,7 +55,7 @@
     --opportunity: 38 92% 56%;
     --insight: 210 80% 58%;
 
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
@@ -69,7 +69,19 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: 'Urbanist', system-ui, sans-serif;
+  }
+
+  /* Brand wordmark styling */
+  .brand-wordmark {
+    font-family: 'Urbanist', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /* Mono for data/scores */
+  .font-data {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 

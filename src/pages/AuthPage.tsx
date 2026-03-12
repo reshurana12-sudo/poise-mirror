@@ -128,10 +128,10 @@ const AuthPage = () => {
           >
             <div className="flex items-center gap-3 mb-8">
               <img src={logoImg} alt="LooksLens" className="w-12 h-12 rounded-xl object-contain" />
-              <span className="font-display text-2xl font-semibold text-foreground">LooksLens</span>
+              <span className="brand-wordmark text-2xl text-foreground">LooksLens</span>
             </div>
 
-            <h1 className="font-display text-4xl xl:text-5xl font-bold text-foreground leading-tight mb-6">
+            <h1 className="font-display text-h1 text-foreground mb-6">
               Unlock your
               <span className="text-gradient-primary block">visual presence</span>
             </h1>
@@ -175,7 +175,7 @@ const AuthPage = () => {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-10 justify-center">
             <img src={logoImg} alt="LooksLens" className="w-10 h-10 rounded-xl object-contain" />
-            <span className="font-display text-xl font-semibold text-foreground">LooksLens</span>
+            <span className="brand-wordmark text-xl text-foreground">LooksLens</span>
           </div>
 
           <div className="glass-panel p-8">
@@ -187,7 +187,7 @@ const AuthPage = () => {
                 exit={{ opacity: 0, x: isLogin ? 20 : -20 }}
                 transition={{ duration: 0.25 }}
               >
-                <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-display text-h2 text-foreground mb-2">
                   {isLogin ? 'Welcome back' : 'Create your account'}
                 </h2>
                 <p className="text-muted-foreground text-sm mb-8">

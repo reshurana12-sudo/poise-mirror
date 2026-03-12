@@ -25,7 +25,7 @@ const Landing = () => {
       >
         <div className="flex items-center gap-2">
           <img src={logoImg} alt="LooksLens" className="w-8 h-8 rounded-lg object-contain" />
-          <span className="font-display text-lg font-semibold tracking-tight">LooksLens</span>
+          <span className="brand-wordmark text-lg">LooksLens</span>
         </div>
         <Button
           variant="ghost"
@@ -50,15 +50,15 @@ const Landing = () => {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-glow" />
-                <span className="text-xs font-medium text-primary/80 tracking-wide uppercase">Intelligent Presence Analysis</span>
+                <span className="text-label text-primary/80 uppercase">Intelligent Presence Analysis</span>
               </div>
 
-              <h1 className="font-display text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight">
+              <h1 className="font-display text-hero font-extrabold leading-[1.05]">
                 Understand Your{" "}
                 <span className="text-gradient-primary">Presence</span>
               </h1>
 
-              <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
+              <p className="text-body-lg text-muted-foreground max-w-lg leading-relaxed">
                 A personal intelligence system that observes your visual presence, reveals hidden patterns, and guides confident self-improvement.
               </p>
             </motion.div>
