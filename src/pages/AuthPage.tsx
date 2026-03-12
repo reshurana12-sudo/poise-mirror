@@ -128,7 +128,7 @@ const AuthPage = () => {
           >
             <div className="flex items-center gap-3 mb-8">
               <img src={logoImg} alt="LooksLens" className="w-12 h-12 rounded-xl object-contain" />
-              <span className="font-display text-2xl font-semibold text-foreground">LooksLens</span>
+              <span className="brand-wordmark text-2xl text-foreground">LooksLens</span>
             </div>
 
             <h1 className="font-display text-4xl xl:text-5xl font-bold text-foreground leading-tight mb-6">
