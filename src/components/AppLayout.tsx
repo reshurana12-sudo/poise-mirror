@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Scan, Eye, Lightbulb, TrendingUp, User, LogOut } from "lucide-react";
@@ -7,11 +7,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import logoImg from "@/assets/lookslens-logo.png";
 
 const navItems = [
-  { icon: Scan, label: "Capture", path: "/app" },
-  { icon: Eye, label: "Insights", path: "/app/insights" },
-  { icon: Lightbulb, label: "Improve", path: "/app/improve" },
-  { icon: TrendingUp, label: "Progress", path: "/app/progress" },
-  { icon: User, label: "Profile", path: "/app/profile" },
+  { icon: Scan, label: "Capture", path: "/app", key: "1" },
+  { icon: Eye, label: "Insights", path: "/app/insights", key: "2" },
+  { icon: Lightbulb, label: "Improve", path: "/app/improve", key: "3" },
+  { icon: TrendingUp, label: "Progress", path: "/app/progress", key: "4" },
+  { icon: User, label: "Profile", path: "/app/profile", key: "5" },
 ];
 
 interface AppLayoutProps {
@@ -27,6 +27,17 @@ const AppLayout = ({ children }: AppLayoutProps) => {
     await signOut();
     navigate("/");
   };
+
+  // Keyboard shortcuts 1-5
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const item = navItems.find((n) => n.key === e.key);
+      if (item) navigate(item.path);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -54,7 +65,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={cn(
-                  "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 group relative",
+                  "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 group relative active:scale-[0.92]",
                   isActive
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
@@ -69,8 +80,9 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                   />
                 )}
                 {/* Tooltip */}
-                <div className="absolute left-full ml-3 px-2.5 py-1 rounded-md bg-card border border-border text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                <div className="absolute left-full ml-3 px-2.5 py-1 rounded-md bg-card border border-border text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">
                   {item.label}
+                  <span className="ml-1.5 text-muted-foreground/60">{item.key}</span>
                 </div>
               </button>
             );
@@ -80,10 +92,10 @@ const AppLayout = ({ children }: AppLayoutProps) => {
         {/* Sign Out */}
         <button
           onClick={handleSignOut}
-          className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 group relative text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 group relative text-muted-foreground hover:text-destructive hover:bg-destructive/10 active:scale-[0.92]"
         >
           <LogOut className="w-[18px] h-[18px]" />
-          <div className="absolute left-full ml-3 px-2.5 py-1 rounded-md bg-card border border-border text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          <div className="absolute left-full ml-3 px-2.5 py-1 rounded-md bg-card border border-border text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap">
             Sign Out
           </div>
         </button>
@@ -112,7 +124,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors duration-200 relative",
+                  "flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-all duration-200 relative active:scale-[0.90]",
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >

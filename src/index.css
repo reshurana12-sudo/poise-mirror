@@ -55,6 +55,10 @@
     --opportunity: 38 92% 56%;
     --insight: 210 80% 58%;
 
+    /* New elevation tokens */
+    --glass-surface: 220 18% 7%;
+    --glass-elevated: 220 16% 12%;
+
     font-family: 'DM Sans', system-ui, sans-serif;
   }
 }
@@ -66,6 +70,9 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -74,8 +81,24 @@
 }
 
 @layer utilities {
+  /* Elevation tier 1: subtle surface */
+  .glass-surface {
+    @apply backdrop-blur-md rounded-xl;
+    background: hsl(var(--glass-surface) / 0.5);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+
+  /* Elevation tier 2: standard card (existing) */
   .glass-panel {
     @apply bg-card/60 backdrop-blur-xl border border-border/60 rounded-xl;
+  }
+
+  /* Elevation tier 3: raised/elevated */
+  .glass-elevated {
+    @apply backdrop-blur-xl rounded-xl;
+    background: hsl(var(--glass-elevated) / 0.8);
+    border: 1px solid hsl(var(--border) / 0.8);
+    box-shadow: 0 8px 32px -8px hsl(var(--background) / 0.6), 0 0 0 1px hsl(var(--primary) / 0.05);
   }
 
   .glass-panel-hover {
@@ -103,6 +126,13 @@
   .surface-elevated {
     background-color: hsl(var(--surface-elevated));
   }
+
+  /* Score display font */
+  .score-display {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
 }
 
 /* Custom scrollbar */
@@ -118,4 +148,9 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
+}
+
+/* Safe area for mobile bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
