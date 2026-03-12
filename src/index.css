@@ -69,7 +69,19 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-family: 'Urbanist', system-ui, sans-serif;
+  }
+
+  /* Brand wordmark styling */
+  .brand-wordmark {
+    font-family: 'Urbanist', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  /* Mono for data/scores */
+  .font-data {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 

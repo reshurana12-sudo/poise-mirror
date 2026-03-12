@@ -14,8 +14,19 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
-        body: ["DM Sans", "system-ui", "sans-serif"],
+        display: ["Urbanist", "system-ui", "sans-serif"],
+        body: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      fontSize: {
+        "hero": ["clamp(3rem, 6vw, 5rem)", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "800" }],
+        "h1": ["2.5rem", { lineHeight: "1.1", letterSpacing: "-0.025em", fontWeight: "700" }],
+        "h2": ["1.875rem", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "600" }],
+        "h3": ["1.25rem", { lineHeight: "1.3", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "body-lg": ["1.125rem", { lineHeight: "1.6", fontWeight: "400" }],
+        "body": ["0.9375rem", { lineHeight: "1.6", fontWeight: "400" }],
+        "micro": ["0.75rem", { lineHeight: "1.4", letterSpacing: "0.02em", fontWeight: "500" }],
+        "label": ["0.6875rem", { lineHeight: "1.3", letterSpacing: "0.06em", fontWeight: "600" }],
       },
       colors: {
         border: "hsl(var(--border))",
