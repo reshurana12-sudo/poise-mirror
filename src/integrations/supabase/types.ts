@@ -38,6 +38,54 @@ export type Database = {
         }
         Relationships: []
       }
+      scans: {
+        Row: {
+          ai_coach_tip: string | null
+          ai_summary: string | null
+          created_at: string
+          eye_balance_score: number
+          grooming_score: number
+          id: string
+          jawline_score: number
+          overall_score: number
+          photo_url: string
+          posture_score: number
+          suggestions: Json | null
+          symmetry_score: number
+          user_id: string
+        }
+        Insert: {
+          ai_coach_tip?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          eye_balance_score?: number
+          grooming_score?: number
+          id?: string
+          jawline_score?: number
+          overall_score?: number
+          photo_url: string
+          posture_score?: number
+          suggestions?: Json | null
+          symmetry_score?: number
+          user_id: string
+        }
+        Update: {
+          ai_coach_tip?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          eye_balance_score?: number
+          grooming_score?: number
+          id?: string
+          jawline_score?: number
+          overall_score?: number
+          photo_url?: string
+          posture_score?: number
+          suggestions?: Json | null
+          symmetry_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
