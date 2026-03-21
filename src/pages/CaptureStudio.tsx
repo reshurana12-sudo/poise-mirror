@@ -1,14 +1,16 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, Upload, Video, RotateCcw, ArrowRight, Lightbulb, AlertCircle, ChevronDown } from "lucide-react";
+import { Camera, Upload, RotateCcw, ArrowRight, Lightbulb, AlertCircle, ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import AppLayout from "@/components/AppLayout";
 import OnboardingWalkthrough from "@/components/OnboardingWalkthrough";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useScans } from "@/hooks/useScans";
+import { useToast } from "@/hooks/use-toast";
 
-type CaptureMode = "camera" | "photo" | "video";
+type CaptureMode = "camera" | "photo";
 
 const CaptureStudio = () => {
   const [mode, setMode] = useState<CaptureMode>("camera");
@@ -17,11 +19,15 @@ const CaptureStudio = () => {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [showFlash, setShowFlash] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const navigate = useNavigate();
+  const { uploadAndAnalyze } = useScans();
+  const { toast } = useToast();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const stopStream = useCallback(() => {
     if (streamRef.current) {
@@ -66,11 +72,47 @@ const CaptureStudio = () => {
     if (!ctx) return;
     ctx.drawImage(video, 0, 0);
     stopStream();
-    // Shutter flash
     setShowFlash(true);
     setTimeout(() => setShowFlash(false), 300);
     setCaptured(true);
   }, [stopStream]);
+
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0);
+      setCaptured(true);
+    };
+    img.src = URL.createObjectURL(file);
+  }, []);
+
+  const handleAnalyze = useCallback(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    setAnalyzing(true);
+    try {
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Failed to create image"))), "image/jpeg", 0.85);
+      });
+
+      await uploadAndAnalyze(blob);
+      toast({ title: "Analysis complete!", description: "Your results are ready in the Insight Dashboard." });
+      navigate("/app/insights");
+    } catch (err: any) {
+      toast({ title: "Analysis failed", description: err.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setAnalyzing(false);
+    }
+  }, [uploadAndAnalyze, navigate, toast]);
 
   const retake = useCallback(() => {
     setCaptured(false);
@@ -91,12 +133,18 @@ const CaptureStudio = () => {
   const modes = [
     { id: "camera" as const, icon: Camera, label: "Camera" },
     { id: "photo" as const, icon: Upload, label: "Upload Photo" },
-    { id: "video" as const, icon: Video, label: "Upload Video" },
   ];
 
   return (
     <AppLayout>
       <OnboardingWalkthrough />
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
       <div className="p-4 md:p-8 max-w-6xl mx-auto">
         <div className="mb-6 md:mb-8">
           <h1 className="font-display text-2xl font-semibold">Capture Studio</h1>
@@ -139,6 +187,22 @@ const CaptureStudio = () => {
                 )}
               </AnimatePresence>
 
+              {/* Analyzing overlay */}
+              <AnimatePresence>
+                {analyzing && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-30 bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3"
+                  >
+                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                    <p className="text-sm font-medium text-foreground">Analyzing your photo...</p>
+                    <p className="text-xs text-muted-foreground">This usually takes 10-15 seconds</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Error state */}
               {cameraError && mode === "camera" && (
                 <div className="absolute inset-0 flex items-center justify-center z-20 p-6">
@@ -171,7 +235,7 @@ const CaptureStudio = () => {
                 style={{ transform: "scaleX(-1)" }}
               />
 
-              {/* Guide overlays (shown when streaming but not captured) */}
+              {/* Guide overlays */}
               {streaming && !captured && (
                 <>
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
@@ -184,7 +248,7 @@ const CaptureStudio = () => {
                 </>
               )}
 
-              {/* Floating tips overlay */}
+              {/* Floating tips */}
               {streaming && !captured && (
                 <div className="absolute top-3 right-3 z-20">
                   <button
@@ -216,18 +280,21 @@ const CaptureStudio = () => {
                 </div>
               )}
 
-              {/* Placeholder for non-camera modes */}
-              {mode !== "camera" && !captured && (
-                <div className="text-center space-y-3 z-10">
+              {/* Upload placeholder */}
+              {mode === "photo" && !captured && (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-center space-y-3 z-10 cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   <div className="w-16 h-16 rounded-full bg-primary/5 border border-primary/15 flex items-center justify-center mx-auto">
                     <Upload className="w-6 h-6 text-primary/40" />
                   </div>
-                  <p className="text-sm text-muted-foreground">Drop an image or click to upload</p>
-                </div>
+                  <p className="text-sm text-muted-foreground">Click to upload a photo</p>
+                </button>
               )}
 
-              {/* Captured success overlay */}
-              {captured && (
+              {/* Captured success */}
+              {captured && !analyzing && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -237,7 +304,7 @@ const CaptureStudio = () => {
                 </motion.div>
               )}
 
-              {/* Scan line animation */}
+              {/* Scan line */}
               {streaming && !captured && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
                   <div
@@ -251,30 +318,39 @@ const CaptureStudio = () => {
             {/* Bottom controls */}
             <div className="flex items-center justify-center gap-4 py-5">
               {!captured ? (
-                <button
-                  onClick={capturePhoto}
-                  disabled={mode === "camera" && !streaming}
-                  className="relative w-16 h-16 rounded-full flex items-center justify-center disabled:opacity-40 group"
-                >
-                  {/* Outer pulse ring */}
-                  <span className="absolute inset-0 rounded-full border-2 border-primary/30 animate-pulse-ring" />
-                  {/* Outer ring */}
-                  <span className="absolute inset-0 rounded-full border-[3px] border-primary/60 transition-all group-hover:border-primary" />
-                  {/* Inner circle */}
-                  <span className="w-12 h-12 rounded-full bg-primary transition-all group-hover:bg-primary/90 group-active:scale-90" />
-                </button>
+                mode === "camera" ? (
+                  <button
+                    onClick={capturePhoto}
+                    disabled={!streaming}
+                    className="relative w-16 h-16 rounded-full flex items-center justify-center disabled:opacity-40 group"
+                  >
+                    <span className="absolute inset-0 rounded-full border-2 border-primary/30 animate-pulse-ring" />
+                    <span className="absolute inset-0 rounded-full border-[3px] border-primary/60 transition-all group-hover:border-primary" />
+                    <span className="w-12 h-12 rounded-full bg-primary transition-all group-hover:bg-primary/90 group-active:scale-90" />
+                  </button>
+                ) : null
               ) : (
                 <>
-                  <Button variant="outline" onClick={retake} className="rounded-full px-5">
+                  <Button variant="outline" onClick={retake} className="rounded-full px-5" disabled={analyzing}>
                     <RotateCcw className="w-4 h-4 mr-2" />
                     Retake
                   </Button>
                   <Button
                     className="glow-ring font-display rounded-full px-6"
-                    onClick={() => navigate("/app/insights")}
+                    onClick={handleAnalyze}
+                    disabled={analyzing}
                   >
-                    Analyze
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                    {analyzing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        Analyze
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </>
+                    )}
                   </Button>
                 </>
               )}
