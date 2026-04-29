@@ -19,8 +19,8 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-    if (!lovableApiKey) throw new Error("LOVABLE_API_KEY is not configured");
+    const aiApiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!aiApiKey) throw new Error("AI gateway key is not configured");
 
     // Verify user
     const supabaseUser = createClient(supabaseUrl, supabaseKey, {
@@ -39,11 +39,11 @@ serve(async (req) => {
       .createSignedUrl(photoPath, 300);
     if (signedError || !signedData?.signedUrl) throw new Error("Failed to get signed URL");
 
-    // Call Lovable AI with the photo
+    // Send photo to the AI gateway for analysis
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${lovableApiKey}`,
+        Authorization: `Bearer ${aiApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
