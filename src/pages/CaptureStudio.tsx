@@ -40,6 +40,12 @@ const CaptureStudio = () => {
   const startCamera = useCallback(async () => {
     setCameraError(null);
     setCaptured(false);
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+      setCameraError(
+        'Camera requires a secure context. Open the app at http://localhost:8080 (not your LAN IP) or use HTTPS. You can still use "Upload Photo" to continue.'
+      );
+      return;
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 960 } },
